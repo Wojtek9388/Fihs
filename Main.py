@@ -2,12 +2,13 @@ from Settings import *
 
 import pyautogui
 import win32api, win32con
+import keyboard
 import time
 import random
 import threading
 
-FishAgainPng = "./Assets/FishAgain.png"
-SellPng = "./Assets/Sell.png"
+FishAgainPng = "./Assets/FSB/FishAgain.png"
+SellPng = "./Assets/FSB/Sell.png"
 
 def Click(X, Y):
     win32api.SetCursorPos((X, Y))
@@ -44,10 +45,29 @@ def AutoSellThread():
             LocalCooldown = (SellCooldown + random.randint(1,3) // 1000) * 60
             time.sleep(LocalCooldown)
 
+def ToggleAutoFishThread():
+    global AutoFish
+    CanChange = True
+
+    while 1:
+        if keyboard.is_pressed('q') and AutoFish and CanChange:
+            AutoFish = False
+            CanChange = False
+            print("Authfish is now set to: ", AutoFish)
+        if keyboard.is_pressed('q') and not AutoFish and CanChange:
+            AutoFish = True
+            CanChange = False
+            print("Authfish is now set to: ", AutoFish)
+        
+        if not keyboard.is_pressed('q'):
+            CanChange = True
+
 def RunThreads():
     FishThread = threading.Thread(target=AutoFishThread)
-    SellThread = threading.Thread(target=AutoSellThread)
     FishThread.start()
-    SellThread.start()
+    PauseFishThread = threading.Thread(target=ToggleAutoFishThread)
+    PauseFishThread.start()
+    #SellThread = threading.Thread(target=AutoSellThread)
+    #SellThread.start()
 
 RunThreads()

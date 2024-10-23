@@ -1,5 +1,5 @@
-FishCooldown = 0
+FishCooldown = 3
 SellCooldown = 0
 
-AutoFish = False
+AutoFish = True
 AutoSell = False
